@@ -5,28 +5,28 @@ Questionário avaliativo da disciplina de JPA  para o curso de **Desenvolvimento
 
 --------------------------------
 
-###**Qual a responsabilidade/objeto das anotações:**
+##**Qual a responsabilidade/objeto das anotações:**
 
 > **@MappedSuperclass**
->: Esta anotação é referenciada a uma classe, que servirá de _base_ para uma ou mais entidades "**@Entity**". Esta classe se aproximará bastante a uma classe abstrata, tendo somente comportamentos e estados, por isso é uma boa prática declara-la como tal.
+Esta anotação é referenciada a uma classe, que servirá de _base_ para uma ou mais entidades "**@Entity**". Esta classe se aproximará bastante a uma classe abstrata, tendo somente comportamentos e estados, por isso é uma boa prática declara-la como tal.
 
 -----------------------------
 >**@Version**
->: Esta anotação é utilizada para controle de versão de um objeto. Utiliza-se este tipo de anotação para quando se considera um Controle de Concorrência Otimista (**OCC**), aquele no qual acredita-se que a probabilidade de duas transações utilizarem o mesmo objeto é minima, uma vez que a própria transação não verifica isto, o hibernate se utilizará deste atributo _**@Version**_ para identificar a versão da entidade.
+Esta anotação é utilizada para controle de versão de um objeto. Utiliza-se este tipo de anotação para quando se considera um Controle de Concorrência Otimista (**OCC**), aquele no qual acredita-se que a probabilidade de duas transações utilizarem o mesmo objeto é minima, uma vez que a própria transação não verifica isto, o hibernate se utilizará deste atributo _**@Version**_ para identificar a versão da entidade.
 
 -----------------------------
 >**@Entity**
->: Anotação responsável por mapear uma tabela no seu banco de dados. Quando uma classe é anotado assim, se torna obrigatório declarar qual será o atributo que representará o Id, este atributo deverá ser anotado com _**@Id**_. Os atributos desta classe se tornaram colunas em sua tabela, retirando os atributos staticos ou que estejam com a anotação _**@Transient**_.
+Anotação responsável por mapear uma tabela no seu banco de dados. Quando uma classe é anotado assim, se torna obrigatório declarar qual será o atributo que representará o Id, este atributo deverá ser anotado com _**@Id**_. Os atributos desta classe se tornaram colunas em sua tabela, retirando os atributos staticos ou que estejam com a anotação _**@Transient**_.
 
 -----------------------------
 >@Table
 >: Esta anotação é também utilizada em uma classe que será "persistível", ela está anotada juntamente com o _**@Entity**_. Servirá para alterar valores referentes a tabela e tem como atributos modificadores os seguintes:
 
->: > **name:** responsável por alterar o nome da tabela no banco. O padrão é o próprio nome da classe.
+> **name:** responsável por alterar o nome da tabela no banco. O padrão é o próprio nome da classe.
 
->: > **schema:** responsável por definar qual será o schema para a tabela. O padrão será o schema principal o do usuário.
+> **schema:** responsável por definar qual será o schema para a tabela. O padrão será o schema principal o do usuário.
 
->: > **catalog:** responsável por restringir e especificar juntamente com o schema a visibilidade da tabela para o usuário. 
+> **catalog:** responsável por restringir e especificar juntamente com o schema a visibilidade da tabela para o usuário. 
 
 >: > **uniqueConstraints:** responsável por criar restrições para a tabela. Esta funcionalidade sobrecreve quaisquer outras retrições e somente será possível na opção de criação de banco.
 
@@ -46,9 +46,9 @@ Questionário avaliativo da disciplina de JPA  para o curso de **Desenvolvimento
 >@Column
 >: Esta anotação é utilizada para personalizar as colunas de sua tabela, podendo ser anotada em cada atributo de sua entidade. Ela possui as seguintes opções:
 
->: > **name:** parametro responsável por alterar o nome da coluna em sua tabela. Por padrão ele criará o mesmo nome de seu atributo.
+> **name:** parametro responsável por alterar o nome da coluna em sua tabela. Por padrão ele criará o mesmo nome de seu atributo.
 
->: > **columnDefinition:**  este parametro será um fragmendo do SLQ usado ao gerar a coluna. Ao utilizar este parametro **NÃO** porderá ser utilizado os seguintes parametros: **lenght, precision, scale, nullable e unique**.
+> **columnDefinition:**  este parametro será um fragmendo do SLQ usado ao gerar a coluna. Ao utilizar este parametro **NÃO** porderá ser utilizado os seguintes parametros: **lenght, precision, scale, nullable e unique**.
 
 >: > **length:**  quando o atributo são do tipo _"string/varchar"_ este parametro ficará responsável por definir qual será o tamanho máximo para o atributo.
 
