@@ -43,6 +43,14 @@ public class EstoqueProduto extends BaseEntity<Long>{
 	@JoinColumn(name="ID_PRODUTO", referencedColumnName="ID_PRODUTO", nullable=true)
 	private Produto produto;
 
+	public EstoqueProduto() {
+	}
+
+	public EstoqueProduto(Long idEstoqueProduto, Double qtTotal) {
+		this.idEstoqueProduto = idEstoqueProduto;
+		this.qtTotal = qtTotal;
+	}
+	
 	public Long getIdEstoqueProduto() {
 		return idEstoqueProduto;
 	}
@@ -50,6 +58,7 @@ public class EstoqueProduto extends BaseEntity<Long>{
 	public void setIdEstoqueProduto(Long idEstoqueProduto) {
 		this.idEstoqueProduto = idEstoqueProduto;
 	}
+	
 
 
 	/**

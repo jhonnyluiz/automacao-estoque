@@ -52,6 +52,11 @@ public class Produto extends BaseEntity<Long>{
 		
 	}
 	
+	public Produto(Long idProduto, String nmProduto) {
+		this.idProduto = idProduto;
+		this.nmProduto = nmProduto;
+	}
+	
 	public Produto(String nmProduto, String dsProduto, String cdProduto, Marca marca, Date dtRegistro) {
 		this.nmProduto = nmProduto;
 		this.dsProduto = dsProduto;

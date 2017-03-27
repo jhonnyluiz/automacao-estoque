@@ -11,7 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
 import org.junit.Test;
 
 public class ValorProdutoTest extends BaseCrudTest<ValorProduto>{
@@ -121,6 +127,55 @@ public class ValorProdutoTest extends BaseCrudTest<ValorProduto>{
 		});
 	}
 	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarValorProdutoChaveValor() {
+		salvarEntidades(10);
+		
+		ProjectionList projection = Projections.projectionList()
+				.add(Projections.property("p.idProduto").as("idProduto"))
+				.add(Projections.property("p.nmProduto").as("nmProduto"))
+				.add(Projections.property("v.vlVenda").as("vlVenda"));
+		
+		Criteria criteria = createCriteria(ValorProduto.class, "v")
+				.setProjection(projection)
+				.createAlias("v.estoqueProduto", "ep", JoinType.LEFT_OUTER_JOIN)
+				.createAlias("ep.produto", "p", JoinType.LEFT_OUTER_JOIN)
+				.setResultTransformer(Criteria.PROJECTION)
+				.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		
+		List<Map<String, Object>> produtoValor = criteria.list();
+		
+		assertTrue("Verifica se a quantidade de produtos é pelo menos 1", produtoValor.size() >= 1);
+		produtoValor.forEach( produto -> {
+			produto.forEach((chave, valor) -> {
+				assertTrue("Primeiro item deve ser um string", chave instanceof String);
+				assertTrue("Segundo item deve ser um String ou long", valor instanceof String || valor instanceof Long || valor instanceof Double);
+			});
+		});
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarValorPorLote() {
+		salvarEntidades(5);
+		
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(EstoqueProduto.class, "ep")
+				.add(Restrictions.in("ep.lote", "BR001", "BR002"))
+				.setProjection(Projections.property("ep.idEstoqueProduto"));
+		
+		Criteria criteria = createCriteria(ValorProduto.class, "v")
+					.createAlias("v.estoqueProduto", "ep")
+					.add(Subqueries.propertyIn("ep.idEstoqueProduto", detachedCriteria))
+					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		
+		List<ValorProduto> valores = criteria.list();
+		
+		valores.forEach(valor -> {
+			assertFalse("Trouxe os itens corretamente", valor.isTransient());
+			assertTrue("Lote igual aos selecionados", valor.getEstoqueProduto().getLote().equals("BR001") || valor.getEstoqueProduto().getLote().equals("BR002"));
+		});
+	}
 	
 	//#####################
 	//## METÓDOS AUXILIARES

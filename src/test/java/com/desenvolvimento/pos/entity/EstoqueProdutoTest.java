@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 
@@ -117,6 +120,43 @@ public class EstoqueProdutoTest extends BaseCrudTest<EstoqueProduto>{
 		assertTrue("Verifica quantidade, mínimo igual 9", lista.size() >= 9);
 		lista.forEach((entidade) -> {
 			assertFalse("Nenhum registro poderá ter o id = 9", entidade.getId() == 9L);
+		});
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarPorLote() {
+		salvarEntidades(3);
+		
+		Criteria criteria = createCriteria(EstoqueProduto.class, "ep")
+								.add(Restrictions.in("ep.lote", "BR001", "BR002", "BR003"))
+								.addOrder(Order.asc("ep.lote"))
+								.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		
+		List<Produto2> produtos = criteria.list();
+		
+		assertTrue("Verifica se a quantidade de notebooks é pelo menos 3", produtos.size() >= 3);
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarIdEQtTotal() {
+		salvarEntidades(3);
+		
+		ProjectionList projection = Projections.projectionList()
+				.add(Projections.property("ep.idEstoqueProduto").as("idEstoqueProduto"))
+				.add(Projections.property("ep.qtTotal").as("qtTotal"));
+		
+		Criteria criteria = createCriteria(EstoqueProduto.class, "ep")
+								.setProjection(projection)
+								.setResultTransformer(Criteria.PROJECTION);
+		
+		List<Object[]> produtos = criteria.list();
+		
+		assertTrue("Verifica se a quantidade de produtos é pelo menos 3", produtos.size() >= 3);
+		produtos.forEach( produto -> {
+			assertTrue("Primeiro item deve ser um id",produto[0] instanceof Long);
+			assertTrue("Segundo item deve ser um quantidad total",produto[1] instanceof Double);
 		});
 	}
 	

@@ -5,11 +5,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.junit.Test;
 
 public class MarcaTest extends BaseCrudTest<Marca>{
@@ -117,6 +124,44 @@ public class MarcaTest extends BaseCrudTest<Marca>{
 		lista.forEach(entidade -> assertFalse("Nenhum registro poderá ter o id = 5", entidade.getId() == 5L));
 	}
 	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarProdutoPorMarcas() {
+		salvarProdutos(3);
+		
+		Criteria criteria = createCriteria(Produto.class, "p")
+								.createAlias("p.marca", "m", JoinType.LEFT_OUTER_JOIN)
+								.add(Restrictions.ilike("m.nmMarca", "ca 1", MatchMode.END))
+								.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		
+		List<Produto> produtos = criteria.list();
+		
+		assertTrue("Verifica se a quantidade de vendas é pelo menos 1", produtos.size() >= 1);
+		produtos.forEach( produto -> assertFalse(produto.isTransient()));
+	}
+	
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarIdEQtTotal() {
+		salvarEntidades(3);
+		
+		ProjectionList projection = Projections.projectionList()
+				.add(Projections.property("m.idMarca").as("idMarca"))
+				.add(Projections.property("m.nmMarca").as("nmMarca"));
+		
+		Criteria criteria = createCriteria(Marca.class, "m")
+								.setProjection(projection)
+								.setResultTransformer(Criteria.PROJECTION);
+		
+		List<Object[]> marcas = criteria.list();
+		
+		assertTrue("Verifica se a quantidade de produtos é pelo menos 3", marcas.size() >= 3);
+		marcas.forEach( marca -> {
+			assertTrue("Primeiro item deve ser um id",marca[0] instanceof Long);
+			assertTrue("Segundo item deve ser um nome",marca[1] instanceof String);
+		});
+	}
 	
 	//#####################
 	//## METÓDOS AUXILIARES
@@ -139,5 +184,25 @@ public class MarcaTest extends BaseCrudTest<Marca>{
 	
 	public Marca getNovaEntidade() {
 		return getNovaEntidade("Marca 1");
+	}
+	
+	public void salvarProdutos(Integer qt) {
+		begin();
+		for (int i = 0; i < qt; i++) {
+			getEm().persist(new Produto("Produto 1", "Descrição", "A0001/2017", new Marca("Marca 1") , new Date()));
+		}
+		commit();
+	}
+	
+	public void salvarEstoqueProduto() {
+		EstoqueProduto entidade = new EstoqueProduto();
+		entidade.setQtMovimentada(new Double("10"));
+		entidade.setQtAnterior(new Double("0"));
+		entidade.setQtTotal(new Double("10"));
+		entidade.setLote("BR001");
+		entidade.setProduto(new Produto("Produto 1", "Descrição", "A0001/2017", new Marca("Marca 1") , new Date()));
+		begin();
+		getEm().persist(entidade);
+		commit();
 	}
 }

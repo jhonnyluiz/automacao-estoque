@@ -11,7 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
+import org.hibernate.transform.Transformers;
 import org.junit.Test;
 
 public class ProdutoTest extends BaseCrudTest<Produto>{
@@ -116,6 +120,59 @@ public class ProdutoTest extends BaseCrudTest<Produto>{
 		
 		assertTrue("Verifica quantidade, mínimo igual 9", lista.size() >= 9);
 		lista.forEach(entidade -> assertFalse("Nenhum registro poderá ter o id = 3", entidade.getId() == 3L));
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarProdutosChaveValorMarca() {
+		salvarEntidades(10);
+		
+		ProjectionList projection = Projections.projectionList()
+				.add(Projections.property("p.idProduto").as("idProduto"))
+				.add(Projections.property("m.nmMarca").as("nmMarca"))
+				.add(Projections.property("p.nmProduto").as("nmProduto"));
+		
+		Criteria criteria = createCriteria(Produto.class, "p")
+				.setProjection(projection)
+				.createAlias("p.marca", "m", JoinType.LEFT_OUTER_JOIN)
+				.setResultTransformer(Criteria.PROJECTION)
+				.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+		
+		List<Map<String, Object>> produtos = criteria.list();
+		
+		assertTrue("Verifica se a quantidade de produtos é pelo menos 1", produtos.size() >= 1);
+		produtos.forEach( produtoMap -> {
+			produtoMap.forEach((chave, valor) -> {
+				assertTrue("Primeiro item deve ser um string", chave instanceof String);
+				assertTrue("Segundo item deve ser um String ou long", valor instanceof String || valor instanceof Long);
+			});
+		});
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void deveConsultarIdNomeConverterCliente() {
+		salvarEntidades(5);
+		
+		ProjectionList projection = Projections.projectionList()
+				.add(Projections.property("p.idProduto").as("idProduto"))
+				.add(Projections.property("p.nmProduto").as("nmProduto"));
+		
+		Criteria criteria = createCriteria(Produto.class, "p")
+				.setProjection(projection)
+				.setResultTransformer(Transformers.aliasToBean(Produto.class));
+		
+		List<Produto> produtos = criteria.list();
+		
+		assertTrue("Verifica se a quantidade de produtos é pelo menos 5", produtos.size() >= 5);
+		
+		produtos.forEach(cliente -> {
+				assertTrue("Id diferente de nulo", cliente.getId() != null);
+				assertTrue("Nome diferente de nulo", cliente.getNmProduto() != null);
+				assertTrue("Codigo deve ser nulo ", cliente.getCdProduto() == null);
+				assertTrue("Descrição deve ser nulo ", cliente.getDsProduto() == null);
+				assertTrue("Data de Registro deve ser nulo ", cliente.getDtRegistro() == null);
+		});
 	}
 	
 	
