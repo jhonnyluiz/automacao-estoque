@@ -102,3 +102,60 @@ Para **true**: se o objeto do atributo for **novo**, ou seja, ainda não esteja 
 >:  Esta anotação é utilizada para indicar uma coluna que servirá de chave primária na tabela de relacionamento. Os parâmetros que são aceitos para esta anotação são os seguintes: _**name, referencedColumnName**_. 
 >: **name:** este parâmetro informa o nome que a coluna da tabela terá, 
 >: **referencedColumnName:** este parâmetro informa a chave primária da tabela dona do relacionamento; 
+
+
+---------------------------------------
+###**Como instânciar Criteria do Hibernate através do EntityManager?**
+Deve-se criar uma entidade com o méoto createCriteria, passando como parametros qual é a classe da entidade da consulta e também o valor do alies da entidade na query.
+
+>: **Cogigo:** Criteria criteria = createCriteria(Produto.class, "p");
+
+---------------------------------------
+###**Como abrir uma transação?**
+Deve-se ter um objeto do EntityManager instanciado através de uma factory: EntityManagerFactory, com a entidade chama-se o método _begin()_.
+
+>: **Cogigo: 1-** EntityManager em;
+>: **Cogigo: 2-** EntityManagerFactory factory
+>: **Cogigo: 3-** factory = Persistence.createEntityManagerFactory("XXXX");
+>: **Cogigo: 4-** em = factory.getEntityManager();
+>: **Cogigo: 5-** em.getTransaction().begin();
+
+---------------------------------------
+###** Como fechar uma transação?**
+Chama-se o método _close()_ do seu EntityManager instanciado;
+
+>: **Cogigo: 6-** em.close();
+
+---------------------------------------
+###** Como criar e executar uma query com JPQL?**
+Cria-se através de uma StringBuilder a sua JPQL e a executa através de uma Query.
+
+>: **Cogigo: 1-** StringBuilder jpql = new StringBuilder();
+>: **Cogigo: 2-** jpql.append("SELECT COUNT(v.id) ");
+>: **Cogigo: 3-** jpql.append(" FROM Venda v ");
+>: **Cogigo: 4-** Query query = getEm().createQuery(jpql.toString());
+>: **Cogigo: 5-** Long qtdProdutosVenda = (Long) query.getSingleResult();
+
+---------------------------------------
+###** Qual a responsabilidade dos valores FetchType.LAZY e FetchType.EAGER?**
+
+>: **FetchType.LAZY:** faz com que o atributo que esteja com este marcação não seja carregado do banco até que você precise dele, ou seja, será carregado quando se solicitar esta informação.
+
+>: **FetchType.EAGER:** este é o oposto do ao LAZY, o EAGER traz os dados mesmo que você não vá utilizá-los.
+
+---------------------------------------
+###** Qual a responsabilidade dos valores CascadeType.PERSIST e CascadeType.REMOVE?**
+
+>: **CascadeType.PERSIST:** 
+
+>: **CascadeType.REMOVE:** 
+
+---------------------------------------
+###** Como fazer uma operação BATCH (DELETE ou UPDATE) através do EntityManager?**
+
+
+---------------------------------------
+###** Qual a explicação para a exception LazyInitializationException?**
+
+
+ 
