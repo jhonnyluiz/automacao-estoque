@@ -34,9 +34,9 @@ Questionário avaliativo da disciplina de JPA  para o curso de **Desenvolvimento
 >@GeneratedValue
 >: Esta anotação é responsável por definir como será feita a geração do Id para entidade, anotada juntamente com o _**@Id**_, ela aceita dois parametros tais como:
 
->: > **strategy:** este paremetro define qual será a estratégia para gerar a chave primária para entidade anotada. Pode-se informar os parametros de acordo com a classe _**GenerationType**_ que tem como valores: **AUTO, IDENTITY, SEQUENCE e TABLE**.
+>: **strategy:** este paremetro define qual será a estratégia para gerar a chave primária para entidade anotada. Pode-se informar os parametros de acordo com a classe _**GenerationType**_ que tem como valores: **AUTO, IDENTITY, SEQUENCE e TABLE**.
 
->: > **generator:** este parametro é utilizado para informar qual será a tabela ou a sequence para a geração dos valores. Necessário quando for informada _**strategy: SEQUENCE ou TABLE**_.
+>: **generator:** este parametro é utilizado para informar qual será a tabela ou a sequence para a geração dos valores. Necessário quando for informada _**strategy: SEQUENCE ou TABLE**_.
 
 -----------------------------
 >@Column
@@ -46,52 +46,59 @@ Questionário avaliativo da disciplina de JPA  para o curso de **Desenvolvimento
 
 > **columnDefinition:**  este parametro será um fragmendo do SLQ usado ao gerar a coluna. Ao utilizar este parametro **NÃO** porderá ser utilizado os seguintes parametros: **lenght, precision, scale, nullable e unique**.
 
->: > **length:**  quando o atributo são do tipo _"string/varchar"_ este parametro ficará responsável por definir qual será o tamanho máximo para o atributo.
+>: **length:**  quando o atributo são do tipo _"string/varchar"_ este parametro ficará responsável por definir qual será o tamanho máximo para o atributo.
 
->: > **precision:** quando o atributo mapeado for um _float_ ou _double_ este paremetro fica responsável por definir qual será o tamanho máximo para o numero.
+>: **precision:** quando o atributo mapeado for um _float_ ou _double_ este paremetro fica responsável por definir qual será o tamanho máximo para o numero.
 
->: > **scale:**  quando o atributo mapeado for um _float_ ou _double_ este paremetro fica responsável por definir qual será a precisão de casas decimais para o atributo.
+>: **scale:**  quando o atributo mapeado for um _float_ ou _double_ este paremetro fica responsável por definir qual será a precisão de casas decimais para o atributo.
 
->: > **nullable:**  parametro responsável por indicar se o atributo poderá ou não ser nulo ao inserir um novo registro.
+>: **nullable:**  parametro responsável por indicar se o atributo poderá ou não ser nulo ao inserir um novo registro.
 
->: > **unique:**  parametro responsável por garantir que o valor do atributo seja unico entre os registros da tabela.
+>: **unique:**  parametro responsável por garantir que o valor do atributo seja unico entre os registros da tabela.
 
->: > **insertable:**  os valores para este parametro poderá ser: **true/false**. 
+>: **insertable:**  os valores para este parametro poderá ser: **true/false**. 
 Para **true**: se o objeto do atributo for **novo**, ou seja, ainda não esteja cadastrado, a entidade que está sendo salva poderá também salvar este novo objeto. Para **false: isto não poderá ocorre.
 
->: > **updatable:**  este parâmetro funciona similar ao **insertable**, porém dará o poder de atualizar o objeto casa o mesmo esteja diferente.
+>: **updatable:**  este parâmetro funciona similar ao **insertable**, porém dará o poder de atualizar o objeto casa o mesmo esteja diferente.
 
->: > **table:**  parâmetro responsável por identificar em qual tabela se encontra a coluna. O padrão é a entidade principal.
+>: **table:**  parâmetro responsável por identificar em qual tabela se encontra a coluna. O padrão é a entidade principal.
 
 -----------------------------
 >@Basic
 >: Esta anotação está entre as mais básicas em uma coluna. Para esta anotação se tem duas possibilidades de passagem de parâmetros que são : 
 
->: > **fetch:** este parâmetro dirá se a propriedade deverá ou não carregar ao se realizar uma consulta pela entidade. Os valores possíveis para este estão na classe _**FetchType**_ que poderão ser **EAGER ou LAZY**.
+>: **fetch:** este parâmetro dirá se a propriedade deverá ou não carregar ao se realizar uma consulta pela entidade. Os valores possíveis para este estão na classe _**FetchType**_ que poderão ser **EAGER ou LAZY**.
 >Para utilizar **EAGER**, é quando se quer que o _objeto/atributo_ será carregado ao trazer sua entidade, e para **LAZY** ele não deverá ser carregado. O padrão caso não especificado é **EAGER**.
 
 -----------------------------
 >@Temporal
 >: Esta anotação é utilizada para atributos do tipo **Date**. Neste caso voce poderá informar três tipos que seu atributo poderá ser de três tipos, dia acordo com a classe _**TemporalType**_ que são:
-> : > **TIME:** para quando o atributo for somente de hora, ex: _23:59:59_.
-**DATE** para quando o atributo for somente data, ex: _31/12/2000_.
-**TIMESTAMP** para quando o atributo conter data e hora, ex: _31/12/2000 23:59:59_. 
+> **TIME:** para quando o atributo for somente de hora, ex: _23:59:59_.
+> **DATE** para quando o atributo for somente data, ex: _31/12/2000_.
+> **TIMESTAMP** para quando o atributo conter data e hora, ex: _31/12/2000 23:59:59_. 
 
 -----------------------------
 >@ManyToOne
 >:  Esta anotação é utilizada para indicar que se trata de um relacionamento de muitos para um. Os parâmetros que são aceitos para esta anotação são os seguintes: _**joinColumn, fetch e cascade**_.  
->: > **joincolumn:** este parâmetro é usado para especificar a coluna que contem a chave estrangeira de cada relacionamento.
->: > **Fetch e cascade:** já foram explicados anteriormente e seu funcionamento é o mesmo.
+>: **joincolumn:** este parâmetro é usado para especificar a coluna que contem a chave estrangeira de cada relacionamento.
+>: **Fetch e cascade:** já foram explicados anteriormente e seu funcionamento é o mesmo.
 
 
 -----------------------------
 >@ManyToMany
->: Esta anotação é utilizada para indicar que se trata de um relacionamento de muitos para muitos. 
+>: Este relacionamento informa que muitos registros de uma entidade estão relacionados com muitos registros de outra entidade. Os parâmetros que são aceitos para esta anotação são os seguintes: _**mappedBy, targetEntity, fetch e cascade**_.  
+>: **mappedBy:** este parâmetro informa o atributo que é dono do relacionamento.
+>: **targetEntity:** este parâmetro informa que a classe entity que é alvo da associação..
+>: **Fetch e cascade:** já foram explicados anteriormente e seu funcionamento é o mesmo.
 
 -----------------------------
 >@OneToOne
->: 
-
+>: Este relacionamento informa que um registro de uma entidade está relacionado com apenas uma outra entidade. Os parâmetros que são aceitos para esta anotação são os seguintes: _**orphanRemoval, optional, fetch e cascade**_. 
+>: **orphanRemoval:** este parâmetro define que uma entidade dependente, caso não tenha relacionamento, será removida do banco de dados.
+>: **optional:** este parâmetro informa você não será obrigado a ter um atributo ao persistir sua entidade.
+>: **Fetch e cascade:** já foram explicados anteriormente e seu funcionamento é o mesmo.
 -----------------------------
 >@JoinColumn
->: 
+>:  Esta anotação é utilizada para indicar uma coluna que servirá de chave primária na tabela de relacionamento. Os parâmetros que são aceitos para esta anotação são os seguintes: _**name, referencedColumnName**_. 
+>: **name:** este parâmetro informa o nome que a coluna da tabela terá, 
+>: **referencedColumnName:** este parâmetro informa a chave primária da tabela dona do relacionamento; 
